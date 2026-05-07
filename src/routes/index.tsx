@@ -1,26 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
+// Index page - just redirects depending on auth status
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: IndexPage,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
+function IndexPage() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
-function Index() {
-  return <PlaceholderIndex />;
+  useEffect(() => {
+    if (loading) return;
+    if (user) navigate({ to: "/dashboard" });
+    else navigate({ to: "/login" });
+  }, [user, loading, navigate]);
+
+  return <div className="loading">Loading...</div>;
 }
